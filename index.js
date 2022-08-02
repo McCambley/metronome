@@ -1,18 +1,25 @@
-let tempo;
+let tempo = 0;
+let clicks = [];
 
-const tempoElement = document.querySelector(".tempo");
+// const tempoElement = document.querySelector(".tempo");
 const tempoButton = document.querySelector(".button");
 
-console.log(tempoElement);
-
 tempoButton.addEventListener("click", handleClick);
+window.addEventListener("keydown", handleClick);
 
 function handleClick() {
-  const newString = generateString();
-  tempoElement.textContent = `${newString} BPM!`;
+  tempoButton.textContent = calculateTempo();
 }
 
-function generateString() {
-  const text = Math.random() * 10;
-  return `${text}`;
+function calculateTempo() {
+  const now = Date.now();
+  clicks = [...clicks, now];
+
+  const recent = clicks.filter((item) => {
+    return item > now - 1000 * 5;
+  });
+
+  return recent.length <= 1
+    ? "Tap"
+    : Math.floor(((recent.length - 1) / (recent[recent.length - 1] - recent[0])) * 1000 * 60);
 }
